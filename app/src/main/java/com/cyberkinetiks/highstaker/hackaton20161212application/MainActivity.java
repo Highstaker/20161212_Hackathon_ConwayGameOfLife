@@ -3,6 +3,7 @@ package com.cyberkinetiks.highstaker.hackaton20161212application;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +52,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 running = false;
                 universe.initializeTiles();
+                updateText(true);
                 universityView.invalidate();
 
             }
@@ -60,14 +62,25 @@ public class MainActivity extends ActionBarActivity {
         universityView = (UniversityView)findViewById(R.id.universityView);
         universityView.setUniverse(universe);
 
-        helloText.setText(getText(R.string.press_start_to_begin) + "\n" + getText(R.string.cells_alive) + universe.aliveCount);
+        updateText(true);
 
     }//onCreate()
+
+    private void updateText(boolean start){
+        //updates the text showing time and number of living cells.
+        if(start)helloText.setText(getText(R.string.press_start_to_begin) + "\n" + getText(R.string.cells_alive) + " " + universe.aliveCount);
+        else helloText.setText(getText(R.string.Time_colon) + " " + universe.time + "\n" + getText(R.string.cells_alive) + " " + universe.aliveCount);
+    }
+
+    private void updateText(){
+        //overloader to provide argument-less functionality. I'm simply trying to simulate Python-like default parameters.
+        updateText(false);
+    }
 
     private void nextStep(){
         universe.doStep();
         universityView.invalidate();
-        helloText.setText(getText(R.string.Time_colon) + " " + universe.time + "\n" + getText(R.string.cells_alive) + " " + universe.aliveCount);
+        updateText();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -76,16 +89,16 @@ public class MainActivity extends ActionBarActivity {
             }
         }
                 ,200);
-    }
+    }//nextStep()
 
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-    }
+    }//onSaveInstanceState
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-    }
+    }//onRestoreInstanceState
 }

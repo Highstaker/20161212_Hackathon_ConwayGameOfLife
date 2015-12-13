@@ -3,7 +3,7 @@
 
     <string name="press_start_to_begin">Press \"Start!\" to begin.</string>
     <string name="Time_colon">Time: </string>
-    <string name="cells_alive">Cells alive: </string>
+    <string name="cells_alive">Cells alive:</string>
     <string name="goodbye_world">Goodbye, World!</string>
     <string name="action_settings">Settings</string>
 </resources>
