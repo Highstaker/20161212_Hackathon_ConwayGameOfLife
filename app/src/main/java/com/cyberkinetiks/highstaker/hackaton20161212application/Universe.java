@@ -117,6 +117,7 @@ public class Universe {//abstract layer for life game
     public void doStep(){
         Log.d("CKdebug","doStep()");
         //backup the universe, so it could be compared later
+        //and yeah, copying multidimentional arrays is not as simple as it might be
         for(int i = 0; i < Universe.SIZE; i++) {
             prev_universe[i] = universe[i].clone();
         }
@@ -140,7 +141,8 @@ public class Universe {//abstract layer for life game
 
 
 
-        //if the grid hasn't changed, system stable. deepEquals works with multidimentional arrays, unlike equals, cause multidimentional arrays in Java are actually arrays of arrays.
+        //if the grid hasn't changed, system stable.
+        // deepEquals works with multidimentional arrays, unlike equals, cause multidimentional arrays in Java are actually arrays of arrays.
         if(deepEquals(universe, prev_universe)){
 
             Log.d("CKdebug", "system is stable!");
