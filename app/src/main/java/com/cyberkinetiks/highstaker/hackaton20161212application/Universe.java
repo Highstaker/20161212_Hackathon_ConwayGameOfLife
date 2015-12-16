@@ -1,5 +1,9 @@
 package com.cyberkinetiks.highstaker.hackaton20161212application;
 
+import android.util.Log;
+
+import static java.util.Arrays.deepEquals;
+
 /**
  * Created by highstaker on 12.12.15.
  */
@@ -7,7 +11,7 @@ package com.cyberkinetiks.highstaker.hackaton20161212application;
 
 
 public class Universe {//abstract layer for life game
-    public static final int SIZE = 50;
+    public static final int SIZE = 8;
 
     public static final int LIVE = 0;
     public static final int DEAD = 1;
@@ -15,12 +19,15 @@ public class Universe {//abstract layer for life game
     public static final int BORN = 3;
 
     private int[][] universe;//grid
+    private int[][] prev_universe;//a backup of a previous step
     public int time = 0;
     public int aliveCount;
+    public boolean systemStable = false;//set to true when the system no longer changes
 
     public Universe() {
         //Initializing Universe
         universe = new int[SIZE][SIZE];
+        prev_universe = new int[SIZE][SIZE];
         initializeTiles();
     }//Universe()
 
@@ -28,6 +35,7 @@ public class Universe {//abstract layer for life game
     {
         //apply saved state
         universe = u;
+        prev_universe = new int[SIZE][SIZE];
         aliveCount = countAlives();
     }
 
@@ -47,6 +55,7 @@ public class Universe {//abstract layer for life game
             }
         time=0;
         aliveCount = countAlives();
+        systemStable = false;
     }
 
     private int countAlives()
@@ -106,6 +115,12 @@ public class Universe {//abstract layer for life game
     }
 
     public void doStep(){
+        Log.d("CKdebug","doStep()");
+        //backup the universe, so it could be compared later
+        for(int i = 0; i < Universe.SIZE; i++) {
+            prev_universe[i] = universe[i].clone();
+        }
+
         for(int x=0; x < SIZE; x++)
             for(int y=0; y < SIZE; y++)
             {
@@ -123,9 +138,20 @@ public class Universe {//abstract layer for life game
                 }
             }
 
-        time++;
-        aliveCount = countAlives();
 
+
+        //if the grid hasn't changed, system stable. deepEquals works with multidimentional arrays, unlike equals, cause multidimentional arrays in Java are actually arrays of arrays.
+        if(deepEquals(universe, prev_universe)){
+
+            Log.d("CKdebug", "system is stable!");
+            systemStable = true;
+            }
+        else
+        {
+            //count time or recount alives only if the system has changed
+            time++;
+            aliveCount = countAlives();
+        }
     }
 
 }//class Universe

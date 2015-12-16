@@ -104,17 +104,19 @@ public class MainActivity extends ActionBarActivity {
     }//updateText()
 
     private void nextStep(){
-        universe.doStep();
-        universityView.invalidate();
-        updateText();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(running)
-                nextStep();
+        if(!universe.systemStable) {
+            universe.doStep();
+            universityView.invalidate();
+            updateText();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (running)
+                        nextStep();
+                }
             }
+                    , 200);
         }
-                ,200);
     }//nextStep()
 
 
