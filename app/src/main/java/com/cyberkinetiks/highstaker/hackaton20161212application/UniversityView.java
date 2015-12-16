@@ -13,8 +13,22 @@ import android.view.View;
 public class UniversityView extends View {
 
     private final Paint paintBlack, paintWhite;
+    private final Paint[] paintColors;
 
     private Universe universe;
+
+    private Paint[] generatepaintColors()
+    {
+        final int N_COLORS = 330;//number of colors
+        Paint[] colors = new Paint[N_COLORS];
+        for(int i = 0; i<N_COLORS;i++)
+        {
+            colors[i] = new Paint();
+            colors[i].setColor( Color.HSVToColor( new float[]{i,1,1} ) );
+        }
+
+        return colors;
+    }
 
     public UniversityView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -24,6 +38,8 @@ public class UniversityView extends View {
 
         paintWhite = new Paint();
         paintWhite.setColor(Color.WHITE);
+
+        paintColors = generatepaintColors();
     }
 
     public void setUniverse(Universe u)

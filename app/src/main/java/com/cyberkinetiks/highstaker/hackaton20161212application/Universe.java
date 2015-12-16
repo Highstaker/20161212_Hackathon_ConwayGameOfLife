@@ -5,6 +5,7 @@ package com.cyberkinetiks.highstaker.hackaton20161212application;
  */
 //ALT+INSERT = proposes constructors, etc.
 
+
 public class Universe {//abstract layer for life game
     public static final int SIZE = 50;
 
@@ -13,22 +14,34 @@ public class Universe {//abstract layer for life game
     public static final int DYING = 2;
     public static final int BORN = 3;
 
-    int[][] universe;//grid
-    public int time;
+    private int[][] universe;//grid
+    public int time = 0;
     public int aliveCount;
 
     public Universe() {
         //Initializing Universe
-        universe= new int[SIZE][SIZE];
+        universe = new int[SIZE][SIZE];
         initializeTiles();
     }//Universe()
+
+    public Universe(int[][] u)
+    {
+        //apply saved state
+        universe = u;
+        aliveCount = countAlives();
+    }
+
+    public int[][] getUniverse()
+    {
+        //returns the universe
+        return universe;
+    }
 
     public void initializeTiles()
     {
         for(int x=0; x < SIZE; x++)
             for(int y=0; y < SIZE; y++)
             {
-//            universe[x][y] = DEAD;
                 //spawn random alive cells
                 universe[x][y] = (Math.random() > 0.5 ? LIVE : DEAD);
             }
@@ -36,7 +49,7 @@ public class Universe {//abstract layer for life game
         aliveCount = countAlives();
     }
 
-    int countAlives()
+    private int countAlives()
     {
         int count = 0;
         for(int x=0; x < SIZE; x++)

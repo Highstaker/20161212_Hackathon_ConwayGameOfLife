@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Hackaton 20161212 Application</string>
+    <string name="app_name">Hackaton 20161212. Game of Life</string>
 
     <string name="press_start_to_begin">Press \"Start!\" to begin.</string>
     <string name="Time_colon">Time: </string>
