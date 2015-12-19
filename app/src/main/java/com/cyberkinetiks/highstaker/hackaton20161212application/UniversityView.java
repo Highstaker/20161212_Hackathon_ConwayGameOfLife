@@ -17,7 +17,7 @@ public class UniversityView extends View {
 
     private Universe universe;
 
-    private Paint[] generatepaintColors()
+    private Paint[] generatePaintColors()
     {
         final int N_COLORS = 330;//number of colors
         Paint[] colors = new Paint[N_COLORS];
@@ -39,7 +39,7 @@ public class UniversityView extends View {
         paintWhite = new Paint();
         paintWhite.setColor(Color.WHITE);
 
-        paintColors = generatepaintColors();
+        paintColors = generatePaintColors();
     }
 
     public void setUniverse(Universe u)

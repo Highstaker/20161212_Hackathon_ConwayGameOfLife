@@ -19,7 +19,7 @@ public class Universe {//abstract layer for life game
     public static final int BORN = 3;
 
     private int[][] universe;//grid
-    private int[][] prev_universe;//a backup of a previous step
+    //private int[][] prev_universe;//a backup of a previous step
     public int time = 0;
     public int aliveCount;
     public boolean systemStable = false;//set to true when the system no longer changes
@@ -27,7 +27,7 @@ public class Universe {//abstract layer for life game
     public Universe() {
         //Initializing Universe
         universe = new int[SIZE][SIZE];
-        prev_universe = new int[SIZE][SIZE];
+        //prev_universe = new int[SIZE][SIZE];
         initializeTiles();
     }//Universe()
 
@@ -35,7 +35,7 @@ public class Universe {//abstract layer for life game
     {
         //apply saved state
         universe = u;
-        prev_universe = new int[SIZE][SIZE];
+        //prev_universe = new int[SIZE][SIZE];
         aliveCount = countAlives();
     }
 
@@ -118,6 +118,9 @@ public class Universe {//abstract layer for life game
         Log.d("CKdebug","doStep()");
         //backup the universe, so it could be compared later
         //and yeah, copying multidimentional arrays is not as simple as it might be
+
+        int[][] prev_universe = new int[SIZE][SIZE];
+
         for(int i = 0; i < Universe.SIZE; i++) {
             prev_universe[i] = universe[i].clone();
         }
