@@ -1,12 +1,16 @@
 package com.cyberkinetiks.highstaker.hackaton20161212application;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -16,7 +20,7 @@ public class MainActivity extends ActionBarActivity {
     private Universe universe;
     private UniversityView universityView;
     private boolean running = false;
-    private Button playButton, stopButton, resetButton;
+    private Button playButton, stopButton, resetButton, setSizeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +57,22 @@ public class MainActivity extends ActionBarActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("CKdebug", "playButton pressed");
+                Log.d("CKdebug", "resetButton pressed");
                 running = false;
                 universe.initializeTiles();
                 updateText(true);
                 universityView.invalidate();
 
+            }
+        }); //объект, выполняющий действие при нажатии кнопки
+
+        setSizeButton = (Button) findViewById(R.id.setSizeButton);
+        setSizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("CKdebug", "setSizeButton pressed");
+                running = false;
+                openSetSizeDialog();
             }
         }); //объект, выполняющий действие при нажатии кнопки
 
@@ -77,6 +91,35 @@ public class MainActivity extends ActionBarActivity {
         updateText(true);
 
     }//onCreate()
+
+    private void openSetSizeDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Set grid size");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d("CKdebug","OK pressed. setting size to " + input.getText().toString());
+                //m_Text = input.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
 
     @Override
     protected void onDestroy() {
