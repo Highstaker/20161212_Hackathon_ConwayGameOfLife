@@ -11,7 +11,7 @@ import static java.util.Arrays.deepEquals;
 
 
 public class Universe {//abstract layer for life game
-    public static final int SIZE = 8;
+    public static final int SIZE = 50;
 
     public static final int LIVE = 0;
     public static final int DEAD = 1;

@@ -30,7 +30,7 @@ public class MainActivity extends ActionBarActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.d("happy!", "button clicked!");
+                Log.d("CKdebug", "playButton pressed");
                 if(!running) {
                     running = true;
                     nextStep();//start playing
@@ -42,7 +42,9 @@ public class MainActivity extends ActionBarActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("CKdebug", "stopButton pressed");
                 running = false;
+//                Log.d("CKdebug", "stopButton pressed. End function. running = " + running);
 
             }
         }); //объект, выполняющий действие при нажатии кнопки
@@ -51,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("CKdebug", "playButton pressed");
                 running = false;
                 universe.initializeTiles();
                 updateText(true);
@@ -82,15 +85,26 @@ public class MainActivity extends ActionBarActivity {
 
     }//onDestroy()
 
-    private int[][] array_int_1D_to_Square2D(int[] a, int size) {
-        int[][] result = new int[size][size];
-        for(int i = 0;i < size*size ; i++)
-        {
-            result[i/size][i%size] = a[i];
-        }
+    @Override
+    protected void onPause() {
+        Log.d("CKdebug","onPause()");
 
-        return result;
-    }//array_int_1D_to_Square2D
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("CKdebug","onStop()");
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("CKdebug","onResume()");
+
+        super.onResume();
+    }
 
     private void updateText(boolean start){
         //updates the text showing time and number of living cells.
@@ -104,6 +118,7 @@ public class MainActivity extends ActionBarActivity {
     }//updateText()
 
     private void nextStep(){
+        Log.d("CKdebug","nextStep(). running = " + running);
         if(!universe.systemStable) {
             universe.doStep();
             universityView.invalidate();
@@ -128,6 +143,9 @@ public class MainActivity extends ActionBarActivity {
         savedInstanceState.putInt("GAME_TIME",universe.time);
         savedInstanceState.putIntArray("CELLS_STATE",Array_int_Square2D_to_1D(universe.getUniverse(), Universe.SIZE));
 
+        //let's stop the process when it is saved. When the data is restored, it will relaunch anyway because `running` is saved.
+        running = false;
+
         super.onSaveInstanceState(savedInstanceState);
     }//onSaveInstanceState
 
@@ -140,6 +158,16 @@ public class MainActivity extends ActionBarActivity {
 
         return result;
     }//Array_int_Square2D_to_1D
+
+    private int[][] array_int_1D_to_Square2D(int[] a, int size) {
+        int[][] result = new int[size][size];
+        for(int i = 0;i < size*size ; i++)
+        {
+            result[i/size][i%size] = a[i];
+        }
+
+        return result;
+    }//array_int_1D_to_Square2D
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
