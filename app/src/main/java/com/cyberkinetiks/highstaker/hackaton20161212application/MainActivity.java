@@ -34,16 +34,8 @@ public class MainActivity extends ActionBarActivity {
     private boolean running = false;
     private Button playButton, stopButton, resetButton, setSizeButton;
 
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);//ссылка на XML с Layout'ом. Класс R генерится системой сборки.
-        Log.d("CKdebug","onCreate() invoked");
-
-        helloText = (TextView) findViewById(R.id.helloText);
-
+    private void initializeButtons()
+    {
         playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +79,10 @@ public class MainActivity extends ActionBarActivity {
                 openSetSizeDialog();
             }
         }); //объект, выполняющий действие при нажатии кнопки
+    }//initializeButtons()
 
+    private void initializeSpeedBar()
+    {
         SeekBar speedSlider = (SeekBar)findViewById(R.id.speedSeekBar);
         speedSlider.incrementProgressBy(1);
         speedSlider.setMax(AVAILABLE_SPEEDS.length-1);
@@ -114,6 +109,18 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);//ссылка на XML с Layout'ом. Класс R генерится системой сборки.
+        Log.d("CKdebug","onCreate() invoked");
+
+        helloText = (TextView) findViewById(R.id.helloText);
+
+        initializeButtons();
+        initializeSpeedBar();
 
         //Create universe
         if(savedInstanceState != null)
