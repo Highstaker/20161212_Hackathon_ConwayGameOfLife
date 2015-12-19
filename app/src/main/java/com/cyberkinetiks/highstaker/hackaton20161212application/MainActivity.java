@@ -15,12 +15,19 @@ import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
+    /////////////////
+    ////////PARAMETERS
+    /////////////////
+    private final int MIN_GRID_SIZE = 6;//minimum grid size you can set
+    private final int MAX_GRID_SIZE = 100;//maximum grid size you can set
 
     private TextView helloText;
     private Universe universe;
     private UniversityView universityView;
     private boolean running = false;
     private Button playButton, stopButton, resetButton, setSizeButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,6 @@ public class MainActivity extends ActionBarActivity {
                 Log.d("CKdebug", "stopButton pressed");
                 running = false;
 //                Log.d("CKdebug", "stopButton pressed. End function. running = " + running);
-
             }
         }); //объект, выполняющий действие при нажатии кнопки
 
@@ -62,7 +68,6 @@ public class MainActivity extends ActionBarActivity {
                 universe.initializeTiles();
                 updateText(true);
                 universityView.invalidate();
-
             }
         }); //объект, выполняющий действие при нажатии кнопки
 
@@ -78,7 +83,8 @@ public class MainActivity extends ActionBarActivity {
 
         if(savedInstanceState != null)
         {//save data exists, reload it
-            universe = new Universe( array_int_1D_to_Square2D(savedInstanceState.getIntArray("CELLS_STATE"),Universe.SIZE ) );
+            int size = savedInstanceState.getInt("GRID_SIZE");
+            universe = new Universe( array_int_1D_to_Square2D(savedInstanceState.getIntArray("CELLS_STATE"),size ) , size);
         }
         else
         {// app started, create random grid
@@ -93,9 +99,9 @@ public class MainActivity extends ActionBarActivity {
     }//onCreate()
 
     private void openSetSizeDialog()
-    {
+    {//opens a size change dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Set grid size");
+        builder.setTitle("Set grid size (" + MIN_GRID_SIZE + " - " + MAX_GRID_SIZE + ")");
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -108,7 +114,27 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Log.d("CKdebug","OK pressed. setting size to " + input.getText().toString());
-                //m_Text = input.getText().toString();
+                int size = Integer.parseInt(input.getText().toString());
+
+                //set limits of size
+                if (size > MAX_GRID_SIZE)
+                {
+                    universe = new Universe( MAX_GRID_SIZE ) ;
+                }
+                else if(size < MIN_GRID_SIZE)
+                {
+                    universe = new Universe( MIN_GRID_SIZE ) ;
+                }
+                else
+                {
+                universe = new Universe( size ) ;
+                }
+
+                //update everything
+                universityView.setUniverse(universe);//is this needed?
+                universityView.invalidate();
+                updateText(true);
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -182,9 +208,15 @@ public class MainActivity extends ActionBarActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.d("CKdebug","onSaveInstanceState() invoked");
         //put the parameters to be saved into Bundle here
+
+        //saving the running state, so it would resume on screen rotation
         savedInstanceState.putBoolean("RUNNING",running);
+        //saving the displayable time of simulation
         savedInstanceState.putInt("GAME_TIME",universe.time);
-        savedInstanceState.putIntArray("CELLS_STATE",Array_int_Square2D_to_1D(universe.getUniverse(), Universe.SIZE));
+        //SIZE is no longer static, it has to be saved
+        savedInstanceState.putInt("GRID_SIZE",universe.SIZE);
+        //Saving the locations of cells
+        savedInstanceState.putIntArray("CELLS_STATE",Array_int_Square2D_to_1D(universe.getUniverse(), universe.SIZE));
 
         //let's stop the process when it is saved. When the data is restored, it will relaunch anyway because `running` is saved.
         running = false;

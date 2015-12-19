@@ -11,7 +11,7 @@ import static java.util.Arrays.deepEquals;
 
 
 public class Universe {//abstract layer for life game
-    public static final int SIZE = 50;
+    public final int SIZE;
 
     public static final int LIVE = 0;
     public static final int DEAD = 1;
@@ -19,23 +19,32 @@ public class Universe {//abstract layer for life game
     public static final int BORN = 3;
 
     private int[][] universe;//grid
-    //private int[][] prev_universe;//a backup of a previous step
     public int time = 0;
     public int aliveCount;
     public boolean systemStable = false;//set to true when the system no longer changes
 
     public Universe() {
-        //Initializing Universe
+        //Initializing Universe with default size
+        SIZE = 50;
         universe = new int[SIZE][SIZE];
         //prev_universe = new int[SIZE][SIZE];
         initializeTiles();
     }//Universe()
 
-    public Universe(int[][] u)
+    public Universe(int size) {
+        //Initialize new universe with a specified size.
+        SIZE = size;
+        universe = new int[SIZE][SIZE];
+        //prev_universe = new int[SIZE][SIZE];
+        initializeTiles();
+
+    }//Universe()
+
+    public Universe(int[][] u,int size)
     {
         //apply saved state
+        SIZE = size;
         universe = u;
-        //prev_universe = new int[SIZE][SIZE];
         aliveCount = countAlives();
     }
 
@@ -121,7 +130,7 @@ public class Universe {//abstract layer for life game
 
         int[][] prev_universe = new int[SIZE][SIZE];
 
-        for(int i = 0; i < Universe.SIZE; i++) {
+        for(int i = 0; i < SIZE; i++) {
             prev_universe[i] = universe[i].clone();
         }
 

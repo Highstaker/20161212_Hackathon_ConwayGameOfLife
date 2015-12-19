@@ -54,12 +54,12 @@ public class UniversityView extends View {
 
         canvas.drawColor(Color.LTGRAY);
 
-        float cellSize = Math.min(canvas.getWidth(),canvas.getHeight()) / Universe.SIZE;
+        float cellSize = Math.min(canvas.getWidth(),canvas.getHeight()) / universe.SIZE;
         float cellSizeHalf = cellSize / 2f;
         float cellR = cellSizeHalf * 0.9f;
 
-        for(int x = 0; x < Universe.SIZE ; x++)
-            for(int y = 0; y < Universe.SIZE ; y++)
+        for(int x = 0; x < universe.SIZE ; x++)
+            for(int y = 0; y < universe.SIZE ; y++)
             {
                 canvas.drawCircle(x*cellSize+cellSizeHalf
                         ,y*cellSize+cellSizeHalf
