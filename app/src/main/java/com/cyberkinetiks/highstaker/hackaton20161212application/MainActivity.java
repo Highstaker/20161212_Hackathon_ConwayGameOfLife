@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 
@@ -20,6 +21,12 @@ public class MainActivity extends ActionBarActivity {
     /////////////////
     private final int MIN_GRID_SIZE = 6;//minimum grid size you can set
     private final int MAX_GRID_SIZE = 100;//maximum grid size you can set
+    private int[] AVAILABLE_SPEEDS = {1,2,4,5,10,20,40,50,100};//a list containing possible speeds of simulation
+
+    ///////////
+    ///GLOBALS////
+    //////////
+    private int update_speed = 1;
 
     private TextView helloText;
     private Universe universe;
@@ -81,6 +88,34 @@ public class MainActivity extends ActionBarActivity {
             }
         }); //объект, выполняющий действие при нажатии кнопки
 
+        SeekBar speedSlider = (SeekBar)findViewById(R.id.speedSeekBar);
+        speedSlider.incrementProgressBy(1);
+        speedSlider.setMax(AVAILABLE_SPEEDS.length-1);
+        speedSlider.setProgress(0);
+        final TextView speedValueText = (TextView)findViewById(R.id.speedText);
+        speedValueText.setText("Speed " + Integer.toString(update_speed));
+
+        speedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                update_speed = AVAILABLE_SPEEDS[progress];
+                Log.d("CKdebug","onProgressChanged() Progress = " + progress + "; Speed = " + Integer.toString(update_speed));
+                speedValueText.setText("Speed " + Integer.toString(update_speed) );
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        //Create universe
         if(savedInstanceState != null)
         {//save data exists, reload it
             int size = savedInstanceState.getInt("GRID_SIZE");
@@ -199,7 +234,7 @@ public class MainActivity extends ActionBarActivity {
                         nextStep();
                 }
             }
-                    , 200);
+                    , (int)(1000/update_speed) );
         }
     }//nextStep()
 
