@@ -126,7 +126,9 @@ public class MainActivity extends ActionBarActivity {
         if(savedInstanceState != null)
         {//save data exists, reload it
             int size = savedInstanceState.getInt("GRID_SIZE");
-            universe = new Universe( array_int_1D_to_Square2D(savedInstanceState.getIntArray("CELLS_STATE"),size ) , size);
+            universe = new Universe( array_int_1D_to_Square2D(savedInstanceState.getIntArray("CELLS_STATE"),size )
+                    , array_int_1D_to_Square2D(savedInstanceState.getIntArray("CELLS_AGES"),size )
+                    , size);
         }
         else
         {// app started, create random grid
@@ -229,7 +231,7 @@ public class MainActivity extends ActionBarActivity {
     }//updateText()
 
     private void nextStep(){
-        Log.d("CKdebug","nextStep(). running = " + running);
+        //Log.d("CKdebug","nextStep(). running = " + running);
         if(!universe.systemStable) {
             universe.doStep();
             universityView.invalidate();
@@ -259,6 +261,8 @@ public class MainActivity extends ActionBarActivity {
         savedInstanceState.putInt("GRID_SIZE",universe.SIZE);
         //Saving the locations of cells
         savedInstanceState.putIntArray("CELLS_STATE",Array_int_Square2D_to_1D(universe.getUniverse(), universe.SIZE));
+        //Saving ages of cells
+        savedInstanceState.putIntArray("CELLS_AGES",Array_int_Square2D_to_1D(universe.getCellAges(), universe.SIZE));
 
         //let's stop the process when it is saved. When the data is restored, it will relaunch anyway because `running` is saved.
         running = false;
