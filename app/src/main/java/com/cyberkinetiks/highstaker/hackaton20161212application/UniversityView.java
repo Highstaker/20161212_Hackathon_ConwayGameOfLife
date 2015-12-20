@@ -19,12 +19,13 @@ public class UniversityView extends View {
 
     private Paint[] generatePaintColors()
     {
-        final int N_COLORS = 330;//number of colors
-        Paint[] colors = new Paint[N_COLORS];
-        for(int i = 0; i<N_COLORS;i++)
+        final int N_COLORS = 300;//number of colors
+        Paint[] colors = new Paint[N_COLORS/2];
+        for(int n=0,i = 0; i<N_COLORS;i+=2)
         {
-            colors[i] = new Paint();
-            colors[i].setColor( Color.HSVToColor( new float[]{i,1,1} ) );
+            colors[n] = new Paint();
+            colors[n].setColor( Color.HSVToColor( new float[]{i,0.8f,1} ) );
+            n++;
         }
 
         return colors;
@@ -64,7 +65,8 @@ public class UniversityView extends View {
                 canvas.drawCircle(x*cellSize+cellSizeHalf
                         ,y*cellSize+cellSizeHalf
                         ,cellR
-                        ,universe.isAlive(x,y) ?  paintWhite : paintBlack);
+                        ,universe.isAlive(x,y) ?  ( universe.getCellAge(x,y) < paintColors.length ? paintColors[universe.getCellAge(x,y)] : paintColors[paintColors.length-1]) : paintBlack
+                        );
             }
 
         super.onDraw(canvas);
