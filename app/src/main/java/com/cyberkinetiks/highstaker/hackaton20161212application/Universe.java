@@ -104,12 +104,13 @@ public class Universe {//abstract layer for life game
     boolean isAlive(int x, int y)
     {
         //handle out of bounds
-        if(x < 0)x+=SIZE;
-        if(y < 0)y+=SIZE;
-        if(x > (SIZE-1))x-=SIZE;
-        if(y > (SIZE-1))y-=SIZE;
+        if(x < 0)x=SIZE-1;
+        if(y < 0)y=SIZE-1;
+        if(x > (SIZE-1))x=0;
+        if(y > (SIZE-1))y=0;
 
-        return universe[x][y] == LIVE;
+        //DYING cells are still alive
+        return universe[x][y] == LIVE || universe[x][y] == DYING;
     }
 
     static int [][] neighbours = {{1,1},{1,0},{1,-1},{0,1},{0,-1},{-1,1},{-1,0},{-1,-1}};
@@ -165,10 +166,6 @@ public class Universe {//abstract layer for life game
                 if (universe[x][y] == LIVE)
                 {
                     cell_ages[x][y]++;
-                }
-                else
-                {
-                    ;
                 }
             }
 
