@@ -2,6 +2,7 @@ package com.cyberkinetiks.highstaker.hackaton20161212application;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -44,8 +45,8 @@ public class MainActivity extends ActionBarActivity {
     private Button playButton, stopButton, resetButton, setSizeButton;
     private LineChart mChart;
 
-    ArrayList<Entry> yVals;
-    ArrayList<String> xVals;
+    ArrayList<Entry> yVals;//Y value entries
+    ArrayList<String> xVals;//X-axis labels
 
     private void initializeButtons() {
         playButton = (Button) findViewById(R.id.playButton);
@@ -77,6 +78,7 @@ public class MainActivity extends ActionBarActivity {
                 Log.d("CKdebug", "resetButton pressed");
                 running = false;
                 universe.initializeTiles();
+                clearGraph();
                 updateText(true);
                 universityView.invalidate();
             }
@@ -132,25 +134,21 @@ public class MainActivity extends ActionBarActivity {
 
         //Entry holds a value and position on X-axis
         yVals = new ArrayList<Entry>();
-        yVals.add(new Entry(1, 0));
-        yVals.add(new Entry(10, 1));
-        yVals.add(new Entry(5, 2));
-        //Creating a dataset
-        LineDataSet set1 = new LineDataSet(yVals, "set1");
-
-        //X-axis labels
         xVals = new ArrayList<String>();
-        for (int i = 0; i < yVals.size(); i++) {
-            xVals.add((i) + "");
-        }
-
+        //Creating a dataset
+        LineDataSet set1 = beautifySet( new LineDataSet(yVals, "set1") );
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
         dataSets.add(set1);
-
         LineData data = new LineData(xVals, dataSets);
         mChart.setData(data);
-
         mChart.invalidate();
+    }
+
+    private void clearGraph()
+    {
+        xVals.clear();
+        yVals.clear();
+        updateGraph(false);
     }
 
     @Override
@@ -284,12 +282,19 @@ public class MainActivity extends ActionBarActivity {
         }
     }//nextStep()
 
-    private void updateGraph() {
-        int index = xVals.size();
-        xVals.add(index + "");
-        yVals.add(new Entry(universe.aliveCount,index));
+    private void updateGraph(){
+        updateGraph(true);
+    }
 
-        LineDataSet set1 = new LineDataSet(yVals, "set1");
+    private void updateGraph(boolean add_value) {
+
+        if(add_value) {
+            int index = xVals.size();
+            xVals.add(index + "");
+            yVals.add(new Entry(universe.aliveCount, index));
+        }
+
+        LineDataSet set1 = beautifySet( new LineDataSet(yVals, "Living cells") );
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
         dataSets.add(set1);
         LineData data = new LineData(xVals, dataSets);
@@ -297,6 +302,16 @@ public class MainActivity extends ActionBarActivity {
 
         mChart.invalidate();//refresh chart
 
+    }
+
+    private LineDataSet beautifySet(LineDataSet set1)
+    {
+        set1.setDrawCircles(false);
+        //set1.setCircleSize(1f);
+        set1.setDrawValues(false);
+        set1.setColor(Color.BLACK);
+        set1.setLineWidth(3f);
+        return set1;
     }
 
     @Override
