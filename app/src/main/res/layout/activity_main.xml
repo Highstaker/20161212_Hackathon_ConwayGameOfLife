@@ -84,13 +84,16 @@
 
         <com.cyberkinetiks.highstaker.hackaton20161212application.UniversityView
         android:id="@+id/universityView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="100pt"
         />
 
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart1"
+            android:layout_width="match_parent"
+            android:layout_height="100pt"
+            />
+
     </LinearLayout>
-
-
 
 </RelativeLayout>
