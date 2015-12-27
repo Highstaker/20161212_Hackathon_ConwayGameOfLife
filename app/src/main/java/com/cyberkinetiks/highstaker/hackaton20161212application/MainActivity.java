@@ -124,24 +124,27 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    private void initializeChart() {
+    private void initializeChart(){initializeChart(new ArrayList<Entry>());}
+
+    private void initializeChart(ArrayList<Entry> savedPoints) {
         mChart = (LineChart) findViewById(R.id.chart1);
         mChart.setDescription("CHART!");
         mChart.setNoDataTextDescription("You need to provide data for the chart.");
+        mChart.setTouchEnabled(false);//global enabler/disabler of touch interactions
+        //mChart.setDragEnabled(false);
+        //mChart.setScaleEnabled(false);
 
         XAxis xAxis = mChart.getXAxis();
         YAxis leftAxis = mChart.getAxisLeft();
 
         //Entry holds a value and position on X-axis
-        yVals = new ArrayList<Entry>();
+        yVals = savedPoints;
         xVals = new ArrayList<String>();
-        //Creating a dataset
-        LineDataSet set1 = beautifySet( new LineDataSet(yVals, "set1") );
-        ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-        dataSets.add(set1);
-        LineData data = new LineData(xVals, dataSets);
-        mChart.setData(data);
-        mChart.invalidate();
+        for(int i = 0;i<yVals.size();i++)
+        {
+            xVals.add(i+"");
+        }
+        updateGraph(false);
     }
 
     private void clearGraph()
@@ -149,7 +152,7 @@ public class MainActivity extends ActionBarActivity {
         xVals.clear();
         yVals.clear();
         updateGraph(false);
-    }
+    }//clearGraph()
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,16 +164,20 @@ public class MainActivity extends ActionBarActivity {
 
         initializeButtons();
         initializeSpeedBar();
-        initializeChart();
 
         //Create universe
-        if (savedInstanceState != null) {//save data exists, reload it
+        if (savedInstanceState != null)
+        {//save data exists, reload it
             int size = savedInstanceState.getInt("GRID_SIZE");
             universe = new Universe(array_int_1D_to_Square2D(savedInstanceState.getIntArray("CELLS_STATE"), size)
                     , array_int_1D_to_Square2D(savedInstanceState.getIntArray("CELLS_AGES"), size)
                     , size);
-        } else {// app started, create random grid
+            initializeChart((ArrayList<Entry>)savedInstanceState.getSerializable("GRAPH_POINTS"));
+        }
+        else
+        {// app started, create random grid
             universe = new Universe();
+            initializeChart();
         }
 
         universityView = (UniversityView) findViewById(R.id.universityView);
@@ -210,6 +217,7 @@ public class MainActivity extends ActionBarActivity {
                 universityView.setUniverse(universe);//is this needed?
                 universityView.invalidate();
                 updateText(true);
+                clearGraph();
 
             }
         });
@@ -221,7 +229,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
         builder.show();
-    }
+    }//openSetSizeDialog()
 
     @Override
     protected void onDestroy() {
@@ -294,9 +302,12 @@ public class MainActivity extends ActionBarActivity {
             yVals.add(new Entry(universe.aliveCount, index));
         }
 
+        //create dataset
         LineDataSet set1 = beautifySet( new LineDataSet(yVals, "Living cells") );
+        //add this set to a list of datasets (in case there are several graphs on one sheet
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
         dataSets.add(set1);
+        //correspond data sets to x values
         LineData data = new LineData(xVals, dataSets);
         mChart.setData(data);
 
@@ -329,6 +340,8 @@ public class MainActivity extends ActionBarActivity {
         savedInstanceState.putIntArray("CELLS_STATE", Array_int_Square2D_to_1D(universe.getUniverse(), universe.SIZE));
         //Saving ages of cells
         savedInstanceState.putIntArray("CELLS_AGES", Array_int_Square2D_to_1D(universe.getCellAges(), universe.SIZE));
+        //Saving graph points
+        savedInstanceState.putSerializable("GRAPH_POINTS",yVals);
 
         //let's stop the process when it is saved. When the data is restored, it will relaunch anyway because `running` is saved.
         running = false;
