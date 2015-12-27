@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -145,7 +146,36 @@ public class MainActivity extends ActionBarActivity {
             xVals.add(i+"");
         }
         updateGraph(false);
-    }
+
+        mChart.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v,MotionEvent event) {
+                Log.d("CKdebug","Graph touched");
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    Log.d("CKdebug","Graph touched:ACTION_DOWN");
+                    // Finger down. Maximize view.
+                    if(universityView.getVisibility() == View.VISIBLE)
+                    {
+                        universityView.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        universityView.setVisibility(View.VISIBLE);
+                    }
+                    return true;
+                }
+
+                else if(event.getAction() == MotionEvent.ACTION_UP){
+                    Log.d("CKdebug","Graph touched:ACTION_UP");
+                    //Finger lifted. Do nothing
+                    return true;
+                }
+
+                return false;
+            }
+        }               );
+
+    }//initializeChart
 
     private void clearGraph()
     {
