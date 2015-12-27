@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -147,6 +148,7 @@ public class MainActivity extends ActionBarActivity {
         }
         updateGraph(false);
 
+        //What happens when the chart is touched
         mChart.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v,MotionEvent event) {
@@ -154,12 +156,18 @@ public class MainActivity extends ActionBarActivity {
                 if(event.getAction() == MotionEvent.ACTION_DOWN){
                     Log.d("CKdebug","Graph touched:ACTION_DOWN");
                     // Finger down. Maximize view.
+                    LinearLayout fieldContainer = (LinearLayout)findViewById(R.id.fieldContainer);
+                    int fieldContainer_width = fieldContainer.getWidth();
+                    int fieldContainer_height = fieldContainer.getHeight();
                     if(universityView.getVisibility() == View.VISIBLE)
                     {
                         universityView.setVisibility(View.GONE);
+                        mChart.setLayoutParams(new LinearLayout.LayoutParams(fieldContainer_width,fieldContainer_height));
                     }
                     else
                     {
+                        int fieldContainer_height_half = fieldContainer.getHeight()/2;
+                        mChart.setLayoutParams(new LinearLayout.LayoutParams(fieldContainer_width,fieldContainer_height_half));
                         universityView.setVisibility(View.VISIBLE);
                     }
                     return true;
@@ -212,6 +220,55 @@ public class MainActivity extends ActionBarActivity {
 
         universityView = (UniversityView) findViewById(R.id.universityView);
         universityView.setUniverse(universe);
+        //What happens when the field is touched
+        universityView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v,MotionEvent event) {
+                Log.d("CKdebug","Field touched");
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    Log.d("CKdebug","Field touched:ACTION_DOWN");
+                    // Finger down. Maximize view.
+                    LinearLayout fieldContainer = (LinearLayout)findViewById(R.id.fieldContainer);
+                    int fieldContainer_width = fieldContainer.getWidth();
+                    int fieldContainer_height = fieldContainer.getHeight();
+                    if(mChart.getVisibility() == View.VISIBLE)
+                    {
+                        mChart.setVisibility(View.GONE);
+                        universityView.setLayoutParams(new LinearLayout.LayoutParams(fieldContainer_width,fieldContainer_height));
+                    }
+                    else
+                    {
+                        int fieldContainer_height_half = fieldContainer.getHeight()/2;
+                        universityView.setLayoutParams(new LinearLayout.LayoutParams(fieldContainer_width,fieldContainer_height_half));
+                        mChart.setVisibility(View.VISIBLE);
+                    }
+                    return true;
+                }
+
+                else if(event.getAction() == MotionEvent.ACTION_UP){
+                    Log.d("CKdebug","Field touched:ACTION_UP");
+                    //Finger lifted. Do nothing
+                    return true;
+                }
+
+                return false;
+            }
+        }               );
+
+        //setting sizes of field and chart. I have to post a postponed runnable, because I cannot get size of a wrapping layout before it is drawn. But user sees nothing suspicious anyway.
+        final LinearLayout fieldContainer = (LinearLayout)findViewById(R.id.fieldContainer);
+        fieldContainer.post(new Runnable(){
+            public void run(){
+                int fieldContainer_width = fieldContainer.getWidth();
+                int fieldContainer_height = fieldContainer.getHeight();
+                int fieldContainer_height_half = fieldContainer.getHeight()/2;
+                Log.d("CKdebug","fieldContainer_width " + fieldContainer_width);
+                Log.d("CKdebug","fieldContainer_height " + fieldContainer_height);
+                universityView.setLayoutParams(new LinearLayout.LayoutParams(fieldContainer_width,fieldContainer_height_half));
+                mChart.setLayoutParams(new LinearLayout.LayoutParams(fieldContainer_width,fieldContainer_height_half));
+            }
+
+        });
 
         updateText(true);
 
